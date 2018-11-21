@@ -22,11 +22,38 @@ namespace Ch16_P3_ExportDataToOfficeApp
                 new Car {Color="Yellow", Make="BMW", PetName="Davie"}
             };
 
+            ExportToExcel(carsInStock);
+            Console.ReadLine();
         }
 
         static void ExportToExcel(List<Car> carsInStock)
         {
-            //
+            Excel.Application excelApp = new Excel.Application();
+            excelApp.Workbooks.Add();
+
+            Excel._Worksheet worksheet = excelApp.ActiveSheet;
+
+            worksheet.Cells[1, "A"] = "Make";
+            worksheet.Cells[1, "B"] = "Color";
+            worksheet.Cells[1, "C"] = "Pet Name";
+
+            int row = 1;
+            foreach (Car car in carsInStock)
+            {
+                row++;
+                worksheet.Cells[row, "A"] = car.Make;
+                worksheet.Cells[row, "B"] = car.Color;
+                worksheet.Cells[row, "C"] = car.PetName;
+            }
+
+            worksheet.Range["A1"].AutoFormat(Excel.XlRangeAutoFormat.xlRangeAutoFormatClassic2);
+
+            // Save the file , quit Excel, and display message to user.
+            worksheet.SaveAs($@"{Environment.CurrentDirectory}\Inventory.xlsx");
+            excelApp.Quit();
+
+            Console.WriteLine(" The Inventory.xlsx file has been saved to your app folder ");
         }
+
         }
     }
